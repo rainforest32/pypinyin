@@ -1,4 +1,4 @@
-#coding:gbk
+#/usr/bin/env python3
 
 import sys, os, jieba, unicode_tool
 
@@ -10,8 +10,10 @@ class PyInfo:
 class GetPinyin:
     def __init__(self):
         self.is_load = False
-        self.dict_path = os.path.split(os.path.realpath(__file__))[0] + '/py.txt'
-        self.jieba_dict_path = os.path.split(os.path.realpath(__file__))[0] + '/dict.txt'
+        self.dict_path = os.path.split(os.path.realpath(__file__))[0] \
+            + '/py.txt'
+        self.jieba_dict_path = os.path.split(os.path.realpath(__file__))[0] \
+            + '/dict.txt'
     
     def getMaxPy(self, sentence):
         if not self.is_load:
@@ -89,10 +91,11 @@ class GetPinyin:
         self.pydict = {}
         f = None
         try:
+            # py.txt
             f = open(self.dict_path)
             for line in f:
                 try:
-                    line = line.strip().decode('gbk')
+                    line = line.strip()
                 except:
                     continue
                 sps = line.split('\t')
@@ -130,7 +133,7 @@ class GetPinyin:
                     pyInfo.py = py
                     pyInfo.freq = freq
                     self.pydict[word] = [ pyInfo ]
-        except Exception, e:
+        except Exception as e:
             try:
                 f.close()
             except:
