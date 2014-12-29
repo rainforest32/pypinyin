@@ -1,59 +1,62 @@
-#coding:gbk
+#/usr/bin/env python3
 
 def is_chinese(uchar):
-    """ÅĞ¶ÏÒ»¸öunicodeÊÇ·ñÊÇºº×Ö"""
-    if uchar >= u'\u4e00' and uchar <= u'\u9fa5':
+    """åˆ¤æ–­ä¸€ä¸ªunicodeæ˜¯å¦æ˜¯æ±‰å­—"""
+    if uchar >= '\u4e00' and uchar <= '\u9fa5':
         return True
     else:
         return False
  
 def is_number(uchar):
-    """ÅĞ¶ÏÒ»¸öunicodeÊÇ·ñÊÇÊı×Ö"""
-    if uchar >= u'\u0030' and uchar <= u'\u0039':
+    """åˆ¤æ–­ä¸€ä¸ªunicodeæ˜¯å¦æ˜¯æ•°å­—"""
+    if uchar >= '\u0030' and uchar <= '\u0039':
         return True
     else:
         return False
  
 def is_alphabet(uchar):
-    """ÅĞ¶ÏÒ»¸öunicodeÊÇ·ñÊÇÓ¢ÎÄ×ÖÄ¸"""
-    if (uchar >= u'\u0041' and uchar <= u'\u005a') or (uchar >= u'\u0061' and uchar <= u'\u007a'):
+    """åˆ¤æ–­ä¸€ä¸ªunicodeæ˜¯å¦æ˜¯è‹±æ–‡å­—æ¯"""
+    if (uchar >= '\u0041' and uchar <= '\u005a') \
+            or (uchar >= '\u0061' and uchar <= '\u007a'):
         return True
     else:
         return False
  
 def is_other(uchar):
-    """ÅĞ¶ÏÊÇ·ñ·Çºº×Ö£¬Êı×ÖºÍÓ¢ÎÄ×Ö·û"""
+    """åˆ¤æ–­æ˜¯å¦éæ±‰å­—ï¼Œæ•°å­—å’Œè‹±æ–‡å­—ç¬¦"""
     if not (is_chinese(uchar) or is_number(uchar) or is_alphabet(uchar)):
         return True
     else:
         return False
  
 def B2Q(uchar):
-    """°ë½Ç×ªÈ«½Ç"""
+    """åŠè§’è½¬å…¨è§’"""
     inside_code = ord(uchar)
-    if inside_code < 0x0020 or inside_code > 0x7e:  # ²»ÊÇ°ë½Ç×Ö·û¾Í·µ»ØÔ­À´µÄ×Ö·û
+    if inside_code < 0x0020 or inside_code > 0x7e:
+        # ä¸æ˜¯åŠè§’å­—ç¬¦å°±è¿”å›åŸæ¥çš„å­—ç¬¦
         return uchar
-    if inside_code == 0x0020:  # ³ıÁË¿Õ¸ñÆäËûµÄÈ«½Ç°ë½ÇµÄ¹«Ê½Îª:°ë½Ç=È«½Ç-0xfee0
+    if inside_code == 0x0020:  # é™¤äº†ç©ºæ ¼å…¶ä»–çš„å…¨è§’åŠè§’çš„å…¬å¼ä¸º:åŠè§’=å…¨è§’-0xfee0
         inside_code = 0x3000
     else:
         inside_code += 0xfee0
         return unichr(inside_code)
  
 def Q2B(uchar):
-    """È«½Ç×ª°ë½Ç"""
+    """å…¨è§’è½¬åŠè§’"""
     inside_code = ord(uchar)
     if inside_code == 0x3000:
         inside_code = 0x0020
     else:
         inside_code -= 0xfee0
-    if inside_code < 0x0020 or inside_code > 0x7e:  # ×ªÍêÖ®ºó²»ÊÇ°ë½Ç×Ö·û·µ»ØÔ­À´µÄ×Ö·û
+    if inside_code < 0x0020 or inside_code > 0x7e:
+        # è½¬å®Œä¹‹åä¸æ˜¯åŠè§’å­—ç¬¦è¿”å›åŸæ¥çš„å­—ç¬¦
         return uchar
     return unichr(inside_code)
  
 def stringQ2B(ustring):
-    """°Ñ×Ö·û´®È«½Ç×ª°ë½Ç"""
+    """æŠŠå­—ç¬¦ä¸²å…¨è§’è½¬åŠè§’"""
     return "".join([Q2B(uchar) for uchar in ustring])
  
 def uniform(ustring):
-    """¸ñÊ½»¯×Ö·û´®£¬Íê³ÉÈ«½Ç×ª°ë½Ç£¬´óĞ´×ªĞ¡Ğ´µÄ¹¤×÷"""
+    """æ ¼å¼åŒ–å­—ç¬¦ä¸²ï¼Œå®Œæˆå…¨è§’è½¬åŠè§’ï¼Œå¤§å†™è½¬å°å†™çš„å·¥ä½œ"""
     return stringQ2B(ustring).lower()
