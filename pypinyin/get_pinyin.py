@@ -1,6 +1,7 @@
 #/usr/bin/env python3
 
-import sys, os, jieba, unicode_tool
+import sys, os, jieba
+import pypinyin.unicode_tool as unicode_tool
 
 class PyInfo:
     def __init__(self):
@@ -119,6 +120,7 @@ class GetPinyin:
                             break
                         i += 1
                     if not dup:
+                        # 构建第一个pinyin候选
                         pyInfo = PyInfo()
                         pyInfo.py = py
                         pyInfo.freq = freq
