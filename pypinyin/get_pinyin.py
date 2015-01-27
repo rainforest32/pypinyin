@@ -37,11 +37,9 @@ class GetPinyin:
                 py_str += ' ' + py
         return py_str
         
-    def get_max_py(self, sentence, inner_sep=None, outer_sep=' '):
+    def get_max_py(self, sentence, inner_sep='', outer_sep=' '):
         if not self.is_load:
             self.load()
-        if not inner_sep:
-            inner_sep = ''
         sentence = unicode_tool.uniform(sentence)
         # 使用HMM可以让分词更好，但是这里不是分词，而是标音
         segs = jieba.cut(sentence, HMM=False)
