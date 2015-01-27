@@ -43,3 +43,5 @@ pypi
 https://pypi.python.org/pypi/pythonpinyin/0.13
 
 pypi 上的版本只能运行在 python2 下，需要使用此 git 中的 py3 分支
+
+如果使用 pip 安装，需要安装 jieba3k

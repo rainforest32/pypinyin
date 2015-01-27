@@ -37,6 +37,38 @@ class GetPinyin:
                 py_str += ' ' + py
         return py_str
         
+    def get_max_py(self, sentence, inner_sep=None, outer_sep=' '):
+        if not self.is_load:
+            self.load()
+        if not inner_sep:
+            inner_sep = ''
+        sentence = unicode_tool.uniform(sentence)
+        # 使用HMM可以让分词更好，但是这里不是分词，而是标音
+        segs = jieba.cut(sentence, HMM=False)
+        py_str = str()
+        prev_is_pinyin = False
+        cur_is_pinyin = False
+        for seg in segs:
+            if unicode_tool.is_chinese(seg):
+                if seg in self.pydict:
+                    py = self.pydict[seg][0].py.replace(' ', inner_sep)
+                    cur_is_pinyin = True
+                else:
+                    py = seg
+            else:
+                py = seg
+
+            if not py_str:
+                py_str = py
+            elif prev_is_pinyin and cur_is_pinyin:
+                py_str += py
+            else:
+                py_str += outer_sep + py
+
+            prev_is_pinyin = cur_is_pinyin
+            cur_is_pinyin = False
+
+        return py_str
         
     def getPy(self, sentence):
         if not self.is_load:
@@ -83,7 +115,53 @@ class GetPinyin:
                 break
         return results
         
-    
+    def get_py(self, sentence, inner_sep=None, outer_sep=' '):
+        if not self.is_load:
+            self.load()
+        if not inner_sep:
+            inner_sep = ''
+        sentence = unicode_tool.uniform(sentence)
+        # 使用HMM可以让分词更好，但是这里不是分词，而是标音
+        segs = jieba.cut(sentence)
+        pyInfoList = []
+        for seg in segs:
+            if unicode_tool.is_chinese(seg[0]):
+                if seg in self.pydict:
+                    pyInfos = self.pydict[seg]
+                    pyInfoList.append(pyInfos)
+                    continue
+            pyInfo = PyInfo()
+            pyInfo.py = seg
+            pyInfo.freq = 1
+            pyInfoList.append([ pyInfo ])
+            
+        results = []
+        pyInfoListLen = len(pyInfoList)
+        pos = [ 0 for i in range(pyInfoListLen)]
+        max_pos = [ len(pyInfoList[i]) - 1 for i in range(pyInfoListLen)]
+        
+        while True:
+            complete = True
+            ri = PyInfo()
+            ri.freq = 1
+            for i in range(pyInfoListLen):
+                if not ri.py:
+                    ri.py = pyInfoList[i][pos[i]].py
+                else:
+                    ri.py += outer_sep + pyInfoList[i][pos[i]].py.replace(' ', inner_sep)
+                ri.freq *= pyInfoList[i][pos[i]].freq
+            results.append(ri)
+            
+            for i in range(pyInfoListLen - 1, -1, -1):
+                if pos[i] < max_pos[i]:
+                    pos[i] += 1
+                    complete = False
+                    break
+                else:
+                    pos[i] = 0
+            if complete:
+                break
+        return results
     def load(self):
         # load jieba first
         if not jieba.initialized:
@@ -120,7 +198,6 @@ class GetPinyin:
                             break
                         i += 1
                     if not dup:
-                        # 构建第一个pinyin候选
                         pyInfo = PyInfo()
                         pyInfo.py = py
                         pyInfo.freq = freq
