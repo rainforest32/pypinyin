@@ -61,7 +61,7 @@ class GetPinyin:
             if not py_str:
                 py_str = py
             elif prev_is_pinyin and cur_is_pinyin:
-                py_str += py
+                py_str += inner_sep + py
             else:
                 py_str += outer_sep + py
 
