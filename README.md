@@ -3,8 +3,10 @@ pypinyin
 
 a python project for getting pinyin for Chinese words or sentence
 
-¸øºº×Ö×¢ÒôµÄÒ»¸öpython¿â£¬»ù±¾ÉÏÄÜÕıÈ·´¦Àí¶àÒô×ÖµÄ×¢ÒôÎÊÌâ
+ç»™æ±‰å­—æ³¨éŸ³çš„ä¸€ä¸ªpythonåº“ï¼ŒåŸºæœ¬ä¸Šèƒ½æ­£ç¡®å¤„ç†å¤šéŸ³å­—çš„æ³¨éŸ³é—®é¢˜
 
+åŸä½œè€…çš„ä»£ç åœ¨ python2.7 ä¸‹å·¥ä½œï¼Œåšäº†ä¸€äº›è½¬ç ä¸ä¿®æ”¹ï¼Œè®©å…¶åœ¨ python3 å¯ä»¥å·¥ä½œï¼Œ
+æ‰€æœ‰çš„å·¥ä½œä¿å­˜åœ¨ python3 åˆ†æ”¯ä¸‹
 dependency
 ========
 
@@ -12,16 +14,18 @@ python2.6+, test on python2.7
 
 jieba: https://github.com/fxsjy/jieba
 
+jieba çš„ master åˆ†æ”¯åªæ”¯æŒ python2ï¼Œè¿™é‡Œéœ€è¦ python3 çš„æµ‹è¯•åˆ†æ”¯
+
 interface
 ========
 
 getPy: give a Chinese sentence, return all possible pinyin with frequency
 
-	¸ø¶¨Ò»¶ÎÖĞÎÄ£¬·µ»ØËùÓĞ¿ÉÄÜµÄÆ´ÒôºÍÏàÓ¦ÆµÂÊ
+	ç»™å®šä¸€æ®µä¸­æ–‡ï¼Œè¿”å›æ‰€æœ‰å¯èƒ½çš„æ‹¼éŸ³å’Œç›¸åº”é¢‘ç‡
 	
 getMaxPy: give a Chinsse sentence, return the pinyin with maximum frequency
 
-	¸ø¶¨Ò»¶ÎÖĞÎÄ£¬·µ»Ø×îÓĞ¿ÉÄÜµÄÆ´Òô
+	ç»™å®šä¸€æ®µä¸­æ–‡ï¼Œè¿”å›æœ€æœ‰å¯èƒ½çš„æ‹¼éŸ³
 
 example
 ========
@@ -37,3 +41,7 @@ pypi
 ========
 
 https://pypi.python.org/pypi/pythonpinyin/0.13
+
+pypi ä¸Šçš„ç‰ˆæœ¬åªèƒ½è¿è¡Œåœ¨ python2 ä¸‹ï¼Œéœ€è¦ä½¿ç”¨æ­¤ git ä¸­çš„ py3 åˆ†æ”¯
+
+å¦‚æœä½¿ç”¨ pip å®‰è£…ï¼Œéœ€è¦å®‰è£… jieba3k

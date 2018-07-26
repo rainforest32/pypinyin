@@ -1,6 +1,7 @@
-#coding:gbk
+#/usr/bin/env python3
 
-import sys, os, jieba, unicode_tool
+import sys, os, jieba
+import pypinyin.unicode_tool as unicode_tool
 
 class PyInfo:
     def __init__(self):
@@ -10,8 +11,10 @@ class PyInfo:
 class GetPinyin:
     def __init__(self):
         self.is_load = False
-        self.dict_path = os.path.split(os.path.realpath(__file__))[0] + '/py.txt'
-        self.jieba_dict_path = os.path.split(os.path.realpath(__file__))[0] + '/dict.txt'
+        self.dict_path = os.path.split(os.path.realpath(__file__))[0] \
+            + '/py.txt'
+        self.jieba_dict_path = os.path.split(os.path.realpath(__file__))[0] \
+            + '/dict.txt'
     
     def getMaxPy(self, sentence):
         if not self.is_load:
@@ -34,6 +37,36 @@ class GetPinyin:
                 py_str += ' ' + py
         return py_str
         
+    def get_max_py(self, sentence, inner_sep='', outer_sep=' '):
+        if not self.is_load:
+            self.load()
+        sentence = unicode_tool.uniform(sentence)
+        # 使用HMM可以让分词更好，但是这里不是分词，而是标音
+        segs = jieba.cut(sentence, HMM=False)
+        py_str = str()
+        prev_is_pinyin = False
+        cur_is_pinyin = False
+        for seg in segs:
+            if unicode_tool.is_chinese(seg):
+                if seg in self.pydict:
+                    py = self.pydict[seg][0].py.replace(' ', inner_sep)
+                    cur_is_pinyin = True
+                else:
+                    py = seg
+            else:
+                py = seg
+
+            if not py_str:
+                py_str = py
+            elif prev_is_pinyin and cur_is_pinyin:
+                py_str += inner_sep + py
+            else:
+                py_str += outer_sep + py
+
+            prev_is_pinyin = cur_is_pinyin
+            cur_is_pinyin = False
+
+        return py_str
         
     def getPy(self, sentence):
         if not self.is_load:
@@ -80,7 +113,53 @@ class GetPinyin:
                 break
         return results
         
-    
+    def get_py(self, sentence, inner_sep=None, outer_sep=' '):
+        if not self.is_load:
+            self.load()
+        if not inner_sep:
+            inner_sep = ''
+        sentence = unicode_tool.uniform(sentence)
+        # 使用HMM可以让分词更好，但是这里不是分词，而是标音
+        segs = jieba.cut(sentence)
+        pyInfoList = []
+        for seg in segs:
+            if unicode_tool.is_chinese(seg[0]):
+                if seg in self.pydict:
+                    pyInfos = self.pydict[seg]
+                    pyInfoList.append(pyInfos)
+                    continue
+            pyInfo = PyInfo()
+            pyInfo.py = seg
+            pyInfo.freq = 1
+            pyInfoList.append([ pyInfo ])
+            
+        results = []
+        pyInfoListLen = len(pyInfoList)
+        pos = [ 0 for i in range(pyInfoListLen)]
+        max_pos = [ len(pyInfoList[i]) - 1 for i in range(pyInfoListLen)]
+        
+        while True:
+            complete = True
+            ri = PyInfo()
+            ri.freq = 1
+            for i in range(pyInfoListLen):
+                if not ri.py:
+                    ri.py = pyInfoList[i][pos[i]].py
+                else:
+                    ri.py += outer_sep + pyInfoList[i][pos[i]].py.replace(' ', inner_sep)
+                ri.freq *= pyInfoList[i][pos[i]].freq
+            results.append(ri)
+            
+            for i in range(pyInfoListLen - 1, -1, -1):
+                if pos[i] < max_pos[i]:
+                    pos[i] += 1
+                    complete = False
+                    break
+                else:
+                    pos[i] = 0
+            if complete:
+                break
+        return results
     def load(self):
         # load jieba first
         if not jieba.initialized:
@@ -89,10 +168,11 @@ class GetPinyin:
         self.pydict = {}
         f = None
         try:
+            # py.txt
             f = open(self.dict_path)
             for line in f:
                 try:
-                    line = line.strip().decode('gbk')
+                    line = line.strip()
                 except:
                     continue
                 sps = line.split('\t')
@@ -130,7 +210,7 @@ class GetPinyin:
                     pyInfo.py = py
                     pyInfo.freq = freq
                     self.pydict[word] = [ pyInfo ]
-        except Exception, e:
+        except Exception as e:
             try:
                 f.close()
             except:

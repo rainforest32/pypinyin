@@ -1,4 +1,4 @@
-#coding:gbk
+#/usr/bin/env python3
 
 import sys, pypinyin
 
@@ -6,13 +6,13 @@ def main():
     getPy = pypinyin.GetPinyin()
     getPy.load()
     print 'text getPy: '
-    results = getPy.getPy(u"wo今天要抢红米，重庆是个好地方")
+    results = getPy.getPy("wo浠婂ぉ瑕佹姠绾㈢背锛岄噸搴嗘槸涓ソ鍦版柟")
     for result in results:
         print result.py
     
     print 'test getMaxPy: '
-    print getPy.getMaxPy(u'wo今天要抢红米，重庆是个好地方，我热爱江西')
-    print getPy.getMaxPy(u'我是中国人，我热爱我的祖国，遇到重大事情，请报告组织')
+    print getPy.getMaxPy('wo浠婂ぉ瑕佹姠绾㈢背锛岄噸搴嗘槸涓ソ鍦版柟锛屾垜鐑埍姹熻タ')
+    print getPy.getMaxPy('鎴戞槸涓浗浜猴紝鎴戠儹鐖辨垜鐨勭鍥斤紝閬囧埌閲嶅ぇ浜嬫儏锛岃鎶ュ憡缁勭粐')
     return 0
     
 
